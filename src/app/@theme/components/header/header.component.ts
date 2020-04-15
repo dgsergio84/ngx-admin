@@ -3,9 +3,13 @@ import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServ
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
+
 import { Subject, Observable } from 'rxjs';
 import { RippleService } from '../../../@core/utils/ripple.service';
+
+import { map, takeUntil, filter } from 'rxjs/operators';
+import { AuthService } from '../../../@auth/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-header',
@@ -50,7 +54,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
 
-  public constructor(
+  public constructor(private authService: AuthService,
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
@@ -72,15 +76,34 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userService.getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe((users: any) => this.user = users.nick);
-
-    const { xl } = this.breakpointService.getBreakpointsMap();
+      this.user.name = this.authService.givenName;
+    // console.debug(this.user);
+    
+    this.menuService.onItemClick()
+    .pipe(
+        filter(({ tag }) => tag === 'user-context-menu'),
+        map(({ item: { title } }) => title),
+    )
+    .subscribe(title => {
+        switch ( title ) {
+        case 'Profile': {
+            this.goToLink(`${environment.auth.url}`);
+            break;
+        } default: {
+            this.authService.logOut();
+            break;
+        }
+      }
+    });
+    // console.debug(this.breakpointService.getBreakpointsMap());
+    const { sm } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()
       .pipe(
-        map(([, currentBreakpoint]) => currentBreakpoint.width < xl),
+        map(([, currentBreakpoint]) => currentBreakpoint.width < sm),
         takeUntil(this.destroy$),
       )
-      .subscribe((isLessThanXl: boolean) => this.userPictureOnly = isLessThanXl);
-
+      .subscribe((isLessThanSm: boolean) => this.userPictureOnly = isLessThanSm);
+      
     this.themeService.onThemeChange()
       .pipe(
         map(({ name }) => name),
@@ -90,6 +113,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.currentTheme = themeName;
         this.rippleService.toggle(themeName?.startsWith('material'));
       });
+  }
+
+  goToLink(url: string) {
+    window.open(url, '_blank');
   }
 
   ngOnDestroy() {
