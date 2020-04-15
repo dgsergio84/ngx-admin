@@ -8,15 +8,23 @@ import {
   NbRequestPasswordComponent,
   NbResetPasswordComponent,
 } from '@nebular/auth';
+import { AuthGuardService } from './@auth/auth-guard.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 export const routes: Routes = [
   {
     path: 'pages',
+    canActivate: [AuthGuardService], // we tell Angular to check the access
+    /*
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
+    */
+   loadChildren: './pages/pages.module#PagesModule'
   },
   {
     path: 'auth',
+    loadChildren: './@auth/auth.module#AuthModule',
+    /* // Section commented, so Okta Auth Module can be used as default
     component: NbAuthComponent,
     children: [
       {
@@ -43,7 +51,7 @@ export const routes: Routes = [
         path: 'reset-password',
         component: NbResetPasswordComponent,
       },
-    ],
+    ], */
   },
   { path: '', redirectTo: 'pages', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages' },
@@ -54,7 +62,9 @@ const config: ExtraOptions = {
 };
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, config)],
+  imports: [RouterModule.forRoot(routes, config)
+    OAuthModule.forRoot(),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {
