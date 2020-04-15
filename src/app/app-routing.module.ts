@@ -10,6 +10,7 @@ import {
 } from '@nebular/auth';
 import { AuthGuardService } from './@auth/auth-guard.service';
 import { OAuthModule } from 'angular-oauth2-oidc';
+import { AuthService } from './@auth/auth.service';
 
 export const routes: Routes = [
   {
@@ -62,10 +63,13 @@ const config: ExtraOptions = {
 };
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, config)
+  imports: [RouterModule.forRoot(routes, config), 
     OAuthModule.forRoot(),
   ],
   exports: [RouterModule],
+  providers: [
+    AuthService,
+  ],
 })
 export class AppRoutingModule {
 }
