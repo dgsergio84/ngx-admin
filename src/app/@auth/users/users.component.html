@@ -1,0 +1,17 @@
+<nb-card>
+    <nb-card-header>
+      Personas <nb-alert *ngIf="selectedReg" outline="disabled">
+            {{ selectedReg.email }} - {{ selectedReg.firstName }} {{ selectedReg.lastName }}
+        </nb-alert>
+        <!-- div class="container-btn">
+            <button nbButton status="danger" (click)="resetFilters()">
+          <i class="fas fa-backspace"></i>
+          Limpiar filtros
+      </button></div -->
+    </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (userRowSelect)="rowSelect($event)" ><!-- (create)="addOficio($event)" -->
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>

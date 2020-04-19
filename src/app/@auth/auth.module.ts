@@ -10,13 +10,16 @@ import {
   NbAlertModule,
   NbButtonModule,
   NbCheckboxModule,
-  NbInputModule
+  NbInputModule,
+  NbCardModule
 } from '@nebular/theme';
 import { LoginComponent } from './login/login.component';
 import { OAuthModule } from 'angular-oauth2-oidc';
+import { UsersComponent } from './users/users.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, UsersComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -30,6 +33,9 @@ import { OAuthModule } from 'angular-oauth2-oidc';
     NbAuthModule,
 
     OAuthModule.forRoot(),
+
+    Ng2SmartTableModule,
+    NbCardModule,
   ],
 })
 export class AuthModule { }
