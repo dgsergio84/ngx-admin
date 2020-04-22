@@ -26,14 +26,14 @@ export class UsersComponent extends BaseListComponent implements OnInit {
         firstName: {
             title: 'Nombre',
             width: '30%',
-            filter: true,
+            filter: false,
             type: 'string',
             sort: false,
         },
         lastName: {
             title: 'Apellido 1',
             width: '30%',
-            filter: true,
+            filter: false,
             sort: false,
             type: 'string',
         },
@@ -47,7 +47,7 @@ export class UsersComponent extends BaseListComponent implements OnInit {
         email: {
             title: 'Correo',
             width: '40%',
-            filter: true,
+            filter: false,
             type: 'string',
             sort: false,
         },
